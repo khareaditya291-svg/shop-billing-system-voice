@@ -1,0 +1,224 @@
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #27ae60;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: #333;
+    padding-bottom: 40px;
+}
+
+.shop-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-area h1 {
+    font-size: 1.6rem;
+}
+
+.logo-area p {
+    font-size: 0.9rem;
+    color: #bdc3c7;
+}
+
+.header-badge {
+    background: #34495e;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 25px;
+    padding: 0 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+h3 {
+    font-size: 1.1rem;
+    margin: 15px 0 10px;
+    color: #555;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.voice-box {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-mic {
+    background-color: var(--accent-color);
+    color: white;
+    width: 100%;
+}
+
+.btn-mic.listening {
+    background-color: var(--danger-color);
+    animation: pulse 1.5s infinite;
+}
+
+.btn-add {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-clear {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-print {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.voice-status {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.manual-inputs {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 10px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.billing-summary {
+    background: #fdfefe;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 1rem;
+}
+
+.grand-total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    border-top: 2px solid #eee;
+    padding-top: 10px;
+    margin-top: 5px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* Printable Bill Styling */
+@media print {
+    body * { visibility: hidden; }
+    .cart-section, .cart-section * { visibility: visible; }
+    .cart-section { position: absolute; left: 0; top: 0; width: 100%; }
+    .action-buttons, .btn-remove { display: none; }
+}

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>सुदर्शन व्यवहार, अर्थवर्कर्स - Voice POS System</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --danger-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #333;
+            padding-bottom: 40px;
+        }
+
+        .shop-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-area h1 {
+            font-size: 1.5rem;
+        }
+
+        .logo-area p {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .voice-box {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .btn-mic {
+            background-color: var(--accent-color);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-mic.listening {
+            background-color: var(--danger-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-clear {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-print {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .voice-status {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .manual-inputs {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 10px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .billing-summary {
+            background: #fdfefe;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 1rem;
+        }
+
+        .grand-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            border-top: 2px solid #eee;
+            padding-top: 10px;
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            .cart-section, .cart-section * { visibility: visible; }
+            .cart-section { position: absolute; left: 0; top: 0; width: 100%; }
+            .action-buttons, .btn-remove { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="shop-header">
+        <div class="logo-area">
+            <i class="fa-solid fa-store fa-2x"></i>
+            <div>
+                <h1>सुदर्शन व्यवहार, अर्थवर्कर्स</h1>
+                <p>Sudarshan Vyavhare, Arthworkers - Continuous Voice POS</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Control Panel -->
+        <section class="control-panel card">
+            <h2><i class="fa-solid fa-microphone-lines"></i> व्हॉईस आणि मॅन्युअल कंट्रोल</h2>
+            
+            <div class="input-group">
+                <label for="customerName">ग्राहकाचे नाव (Customer Name):</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="customerName" value="सुदर्शन व्यवहार" placeholder="नाव प्रविष्ट करा">
+                    <button id="nameMicBtn" class="btn btn-add" style="padding: 10px 14px;"><i class="fa-solid fa-microphone"></i></button>
+                </div>
+            </div>
+
+            <!-- Voice Controls -->
+            <div class="voice-box">
+                <button id="micBtn" class="btn btn-mic">
+                    <i class="fa-solid fa-microphone"></i> बोलायला सुरुवात करा (Start Voice Order)
+                </button>
+                <p id="voiceStatus" class="voice-status">बटणावर क्लिक करा आणि सर्व वस्तू एकाच वेळी बोला...</p>
+            </div>
+
+            <hr style="margin-bottom: 15px;">
+
+            <!-- Manual Entry -->
+            <h3><i class="fa-solid fa-cart-plus"></i> मॅन्युअल वस्तू जोडा</h3>
+            <div class="manual-inputs">
+                <input type="text" id="itemName" placeholder="वस्तूचे नाव">
+                <input type="number" id="itemQty" value="1" min="1" placeholder="नग">
+                <input type="number" id="itemPrice" placeholder="दर (₹)">
+                <button id="addItemBtn" class="btn btn-add"><i class="fa-solid fa-plus"></i></button>
+            </div>
+        </section>
+
+        <!-- Cart & Live Receipt Display -->
+        <section class="cart-section card">
+            <h2><i class="fa-solid fa-file-invoice-dollar"></i> चालू बिल (Live Bill)</h2>
+            <p style="margin-bottom: 15px; font-weight: 600;">ग्राहक: <span id="displayCustName">सुदर्शन व्यवहार</span></p>
+            
+            <div class="table-wrapper">
+                <table id="cartTable">
+                    <thead>
+                        <tr>
+                            <th>अ.क्र.</th>
+                            <th>वस्तूचे नाव</th>
+                            <th>प्रमाण (Qty)</th>
+                            <th>दर (Price)</th>
+                            <th>एकूण (Total)</th>
+                            <th>कृती</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartBody">
+                        <!-- Items rendered here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total Calculations -->
+            <div class="billing-summary">
+                <div class="summary-line">
+                    <span>उपएकूण (Subtotal):</span>
+                    <span id="subtotal">₹0.00</span>
+                </div>
+                <div class="summary-line">
+                    <span>जीएसटी (GST 18%):</span>
+                    <span id="gstAmount">₹0.00</span>
+                </div>
+                <div class="summary-line grand-total">
+                    <span>एकूण देय रक्कम (Grand Total):</span>
+                    <span id="grandTotal">₹0.00</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button id="clearBtn" class="btn btn-clear"><i class="fa-solid fa-trash"></i> रीसेट करा</button>
+                <button id="printBtn" class="btn btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> बिल प्रिंट करा</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Expanded Daily Grocery & Household Requirements Database
+        const LOCAL_PRICES = {
+            // 🥛 Dairy & Breakfast Items
+            "दूध": 30, "दुध": 30, "दही": 35, "ताक": 15, "लोणी": 60, "बटर": 50,
+            "चीझ": 75, "पनीर": 120, "मलाई": 40, "अंडी": 70, "ब्रेड": 40, "पाव": 15,
+            "जाम": 90, "मधात": 110, "ओट्स": 95, "कॉर्नफ्लेक्स": 150,
+
+            // 🌾 Staples, Grains & Flour
+            "तांदूळ": 60, "गहू": 45, "ज्वारी": 50, "बाजरी": 40, "नाचणी": 55, "साखर": 42,
+            "गूळ": 60, "मीठ": 20, "रवा": 35, "मैदा": 35, "पोहे": 45, "साबुदाणा": 85,
+            "बेसन": 90, "दलिया": 40, "वरई": 95,
+
+            // 🫘 Pulses & Dals
+            "डाळ": 120, "तूरडाळ": 140, "मूगडाळ": 110, "हरभरा": 80, "मसूरडाळ": 95,
+            "उडीदडाळ": 130, "शेंगदाणे": 120, "राजमा": 130, "चवळी": 100, "मटकी": 110,
+            "वाटाणा": 70, "काळे चणे": 85,
+
+            // 🛢️ Oils & Ghee
+            "तेल": 140, "सोयाबीन तेल": 135, "शेंगदाणा तेल": 170, "सूर्यफूल तेल": 145,
+            "मोहरी तेल": 160, "खोबरेल तेल": 210, "तूप": 350, "म्हशीचे तूप": 450,
+
+            // 🧂 Spices & Condiments
+            "हळद": 30, "तिखट": 60, "लाल तिखट": 65, "मसाला": 40, "गरम मसाला": 55,
+            "जिरे": 50, "मोहरी": 30, "धने": 40, "हिंग": 45, "वेलची": 120, "लवंग": 80,
+            "काळी मिरी": 90, "दालचिनी": 65, "तमालपत्र": 25, "कसुरी मेथी": 30,
+
+            // ☕ Beverages & Snacks
+            "चहा": 45, "चहा पावडर": 45, "कॉफी": 60, "ग्रीन टी": 140, "बिस्कीट": 10,
+            "कुरकुरे": 20, "कुडकुडे": 20, "वेफर्स": 20, "चीप्स": 20, "चकली": 40,
+            "शेव": 35, "फरसाण": 40, "सोडा": 20, "सरबत": 75, "रसना": 35,
+
+            // 🧼 Hygiene & Cleaning Products
+            "साबण": 35, "डिटर्जंट": 110, "निर्मा": 110, "कपड्यांचा साबण": 25,
+            "भांड्याचा साबण": 20, "लिक्विड विम": 55, "शॅम्पू": 65, "कंडिशनर": 120,
+            "टूथपेस्ट": 55, "कोलगेट": 55, "टूथब्रश": 30, "फिनाईल": 80, "हँडवॉश": 90,
+            "हारपिक": 95, "ऑडोनिल": 60, "गुडनाईट": 85, "मॉस्क्युटो कॉईल": 40,
+
+            // 🥔 Vegetables & Fruits
+            "कांदा": 30, "बटाटा": 35, "टोमॅटो": 40, "लसूण": 180, "आले": 120,
+            "कोथिंबीर": 20, "मिरची": 50, "पालक": 25, "मेथी": 30, "गाजर": 45,
+            "काकडी": 35, "सफरचंद": 160, "केळी": 50, "संतरी": 80, "डाळिंब": 140,
+
+            // 🏠 General Household & Stationery
+            "काडीपेटी": 10, "मेणबत्ती": 30, "अगरबत्ती": 45, "कापूर": 40, "रुमाल": 30,
+            "टॉयलेट पेपर": 50, "नेपकिन": 40, "स्क्रबर": 15, "झाडू": 80, "पायपुसणी": 60
+        };
+
+        let cart = [];
+        let isListeningActive = false;
+
+        const micBtn = document.getElementById('micBtn');
+        const nameMicBtn = document.getElementById('nameMicBtn');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const customerNameInput = document.getElementById('customerName');
+        const displayCustName = document.getElementById('displayCustName');
+        const cartBody = document.getElementById('cartBody');
+        const subtotalEl = document.getElementById('subtotal');
+        const gstEl = document.getElementById('gstAmount');
+        const grandTotalEl = document.getElementById('grandTotal');
+
+        customerNameInput.addEventListener('input', (e) => {
+            displayCustName.innerText = e.target.value || "सुदर्शन व्यवहार";
+        });
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'mr-IN';
+            recognition.continuous = true;
+            recognition.interimResults = false;
+
+            // Customer Name Speech Input
+            const nameRecognition = new SpeechRecognition();
+            nameRecognition.lang = 'mr-IN';
+            nameRecognition.onresult = (e) => {
+                const nameText = e.results[0][0].transcript.trim();
+                customerNameInput.value = nameText;
+                displayCustName.innerText = nameText;
+            };
+
+            nameMicBtn.addEventListener('click', () => {
+                nameRecognition.start();
+            });
+
+            // Main Continuous Voice Order Control
+            micBtn.addEventListener('click', () => {
+                if (!isListeningActive) {
+                    isListeningActive = true;
+                    recognition.start();
+                    micBtn.classList.add('listening');
+                    micBtn.innerHTML = '<i class="fa-solid fa-microphone-slash"></i> थांबवा (Stop Listening)';
+                    voiceStatus.innerText = "🎙️ माइक सुरू आहे... सर्व वस्तू सांगा. थांबवण्यासाठी 'थांबा' म्हणा.";
+                } else {
+                    stopOrderListening();
+                }
+            });
+
+            function stopOrderListening() {
+                isListeningActive = false;
+                try { recognition.stop(); } catch(e){}
+                micBtn.classList.remove('listening');
+                micBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> बोलायला सुरुवात करा (Start Voice Order)';
+            }
+
+            recognition.onresult = (event) => {
+                const lastIndex = event.results.length - 1;
+                const transcript = event.results[lastIndex][0].transcript.trim().toLowerCase();
+                
+                voiceStatus.innerText = `👉 तुम्ही म्हणालात: "${transcript}"`;
+
+                const stopWords = ['थांबा', 'थांब', 'बिल', 'पूर्ण', 'झालं', 'stop', 'checkout'];
+                const matchesStop = stopWords.some(word => transcript.includes(word));
+
+                if (matchesStop) {
+                    voiceStatus.innerText = "🛑 ['थांबा' आदेश मिळाला. बिल पूर्ण केले आहे.]";
+                    stopOrderListening();
+                } else {
+                    processVoiceOrder(transcript);
+                }
+            };
+
+            recognition.onend = () => {
+                if (isListeningActive) {
+                    try { recognition.start(); } catch (e) {}
+                }
+            };
+        } else {
+            voiceStatus.innerText = "तुमच्या ब्राऊझरमध्ये व्हॉईस सपोर्ट उपलब्ध नाही.";
+            micBtn.disabled = true;
+        }
+
+        function processVoiceOrder(text) {
+            const marathiDigits = {
+                "एक": 1, "दोन": 2, "तीन": 3, "चार": 4, "पाच": 5,
+                "सहा": 6, "सात": 7, "आठ": 8, "नऊ": 9, "दहा": 10
+            };
+            
+            let words = text.split(/\s+/);
+            let currentQty = 1;
+
+            words.forEach(word => {
+                let cleanWord = word.replace(/[^\w\u0900-\u097F]/g, '').trim();
+                
+                if (!cleanWord || ['थांबा', 'थांब', 'बिल', 'करा', 'झालं', 'stop'].includes(cleanWord)) {
+                    return;
+                }
+
+                if (marathiDigits[cleanWord]) {
+                    currentQty = marathiDigits[cleanWord];
+                } else if (!isNaN(parseInt(cleanWord))) {
+                    currentQty = parseInt(cleanWord);
+                } else {
+                    let item = cleanWord;
+                    // Look up price in database or generate a default estimate (₹35)
+                    let price = LOCAL_PRICES[item] || 35;
+                    addItemToCart(item, currentQty, price);
+                    currentQty = 1;
+                }
+            });
+        }
+
+        document.getElementById('addItemBtn').addEventListener('click', () => {
+            const name = document.getElementById('itemName').value.trim();
+            const qty = parseInt(document.getElementById('itemQty').value) || 1;
+            const price = parseFloat(document.getElementById('itemPrice').value) || LOCAL_PRICES[name] || 35;
+
+            if (name) {
+                addItemToCart(name, qty, price);
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemPrice').value = '';
+            }
+        });
+
+        function addItemToCart(name, qty, price) {
+            let existingItem = cart.find(i => i.name === name);
+            if (existingItem) {
+                existingItem.qty += qty;
+            } else {
+                cart.push({ name, qty, price });
+            }
+            renderCart();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            cart = [];
+            renderCart();
+        });
+
+        function renderCart() {
+            cartBody.innerHTML = '';
+            let subtotal = 0;
+
+            cart.forEach((item, index) => {
+                let total = item.qty * item.price;
+                subtotal += total;
+
+                let row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.name}</td>
+                        <td>${item.qty}</td>
+                        <td>₹${item.price.toFixed(2)}</td>
+                        <td>₹${total.toFixed(2)}</td>
+                        <td><button class="btn btn-clear" style="padding: 4px 8px; font-size: 0.8rem;" onclick="removeItem(${index})"><i class="fa-solid fa-xmark"></i></button></td>
+                    </tr>
+                `;
+                cartBody.innerHTML += row;
+            });
+
+            let gst = subtotal * 0.18;
+            let grandTotal = subtotal + gst;
+
+            subtotalEl.innerText = `₹${subtotal.toFixed(2)}`;
+            gstEl.innerText = `₹${gst.toFixed(2)}`;
+            grandTotalEl.innerText = `₹${grandTotal.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
